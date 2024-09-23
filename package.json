@@ -1,0 +1,27 @@
+{
+  "name": "eda4",
+  "version": "1.0.0",
+  "description": "event driven architecture 1",
+  "main": "eda1.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node eda1.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/markdernie/eda1.git"
+  },
+  "keywords": [
+    "EDA"
+  ],
+  "author": "Mark Dernie",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/markdernie/eda1/issues"
+  },
+  "dependencies": {
+    "collections": "^5.1.13",
+    "luxon": "^3.4.4"
+  },
+  "homepage": "https://github.com/markdernie/eda1#readme"
+}
