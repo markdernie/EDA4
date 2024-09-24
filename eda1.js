@@ -70,14 +70,14 @@ const fs = require('fs');
 const { url } = require('url');
 const queryString = require('querystring');
 const { DateTime } = require("luxon")
-const { isMapIterator } = require('util/types');
+//const { isMapIterator } = require('util/types');
 var Set = require("collections/set");
 
-function User() {
-    this.name = 'something';
-}
+// function User() {
+//     this.name = 'something';
+// }
 
-let currentDate = new Date()
+//let currentDate = new Date()
 const dt = DateTime.local(2017, 5, 15, 8, 30);
 
 
@@ -86,7 +86,7 @@ const args = getArgs();
 const verbose = args.v
 
 printTime('start', '', verbose)
-if (verbose) { printTime('Verbose', verbose, verbose) }
+//if (verbose) { printTime('Verbose', verbose, verbose) }
 
 
 const dir = './data/';
@@ -105,7 +105,7 @@ printTime('port', port, verbose)
 
 
 http.createServer((req, res) => {
-    printTime('got a request', req.method, verbose)
+    printTime('got a req.method:', req.method, verbose)
 
     var querystring = params(req)
     
@@ -125,12 +125,14 @@ http.createServer((req, res) => {
     
     if (req.method == "PUT") {
         printTime('PUT', '', verbose)
+        const lastupdate = Date.now()
 
         let body = '';
         req.on('data', (chunk) => {
             body += chunk;
         });
-        
+
+       
         
 
         req.on('end', () => {
@@ -150,8 +152,10 @@ http.createServer((req, res) => {
 
                 }
             })
+            // added lastupdate field to index faled as it send back multiple e=records per id
+            // when using Set to get unique records
 
-            //let index = '{"id":"' + bodyparsed.id + '","creationdate":"' + bodyparsed.creationdate + '"}'
+            //let index = '{"id":"' + bodyparsed.id + '","lastupdate":' + lastupdate + '}'
             let index = '{"id":"' + bodyparsed.id  + '"}'
             fs.appendFile(indexfile, index + separator, function (err) {
                 if (err) {
@@ -192,9 +196,9 @@ http.createServer((req, res) => {
 
 
 
-                    printTime('index write back arrayjson:', arrayjson, verbose)
+                    // printTime('index write back arrayjson:', arrayjson, verbose)
                     res.write(arrayjson)
-                    console.log('arrayjson:', arrayjson)
+                    // console.log('arrayjson:', arrayjson)
 
                     for (const element of array) {
                         console.log('LOOPING:', element)
@@ -238,9 +242,9 @@ http.createServer((req, res) => {
                 let alllines = data.toString().split('<<EVENT>>\r\n')
                     .filter((val) => { return val });
                 let uniquelines= [...new Set(alllines)]
-                printTime('alllines', alllines.length, verbose)
-                printTime('alllines', uniquelines.length, verbose)
-                printTime('UNIQUELINES', uniquelines, verbose)
+                //printTime('alllines', alllines.length, verbose)
+                //printTime('alllines', uniquelines.length, verbose)
+                //printTime('UNIQUELINES', uniquelines, verbose)
                 let returnval=[]
                 let unique='xx'
                 let numberSelected = 0;
@@ -249,15 +253,15 @@ http.createServer((req, res) => {
                     
                     
                     let jelement = JSON.parse(element)
-                    printTime('jelement.id',jelement.id,verbose)
+                    //printTime('jelement.id',jelement.id,verbose)
                     returnval.push(jelement)
                     
                     
                     
                     
                 }
-                printTime('returnval.length',returnval.length,verbose)
-                printTime('returnval',JSON.stringify(returnval),verbose)
+                //printTime('returnval.length',returnval.length,verbose)
+                //printTime('returnval',JSON.stringify(returnval),verbose)
                 res.write(JSON.stringify(returnval))
                             
                 res.end();
@@ -271,9 +275,9 @@ http.createServer((req, res) => {
 
 
     if (req.method === "GET" && querystring.action === 'cv') {
-        printTime('get cv', req.method,querystring.action,'method:','action:',verbose)
-        printTime('new code GET cv', '', verbose)
-        printTime('new code action=', querystring.action, verbose)
+        //printTime('get cv', req.method,querystring.action,'method:','action:',verbose)
+        //printTime('new code GET cv', '', verbose)
+        //printTime('new code action=', querystring.action, verbose)
         if (querystring.action === 'cv') {
 
             printTime('action=cv ', querystring.action, verbose)
@@ -290,7 +294,7 @@ http.createServer((req, res) => {
                 } else {
 
                     let go0 = data.toString().split('<<EVENT>>\r\n');
-                    printTime('go0:', go0, verbose)
+                   // printTime('go0:', go0, verbose)
 
                     let go1 = go0.reduce((accumulor, item) => {
                         if (item) {
@@ -300,7 +304,7 @@ http.createServer((req, res) => {
                         return accumulor
                     }, {})
 
-                    printTime('go1:', go1, verbose)
+                   // printTime('go1:', go1, verbose)
 
                     res.write(JSON.stringify(go1))
 
