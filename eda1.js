@@ -70,14 +70,11 @@ const fs = require('fs');
 const { url } = require('url');
 const queryString = require('querystring');
 const { DateTime } = require("luxon")
-//const { isMapIterator } = require('util/types');
+
 var Set = require("collections/set");
+//const { MatTabBodyPortal } = require('@angular/material/tabs');
 
-// function User() {
-//     this.name = 'something';
-// }
 
-//let currentDate = new Date()
 const dt = DateTime.local(2017, 5, 15, 8, 30);
 
 
@@ -86,7 +83,7 @@ const args = getArgs();
 const verbose = args.v
 
 printTime('start', '', verbose)
-//if (verbose) { printTime('Verbose', verbose, verbose) }
+
 
 
 const dir = './data/';
@@ -96,7 +93,9 @@ var port = args.port
 
 
 if (!port) {
-    port = 3000
+   
+    port = 3002
+    printTime('port set:', '3002', verbose)
 }
 var count = 0
 const separator = '<<EVENT>>\r\n'
@@ -105,6 +104,8 @@ printTime('port', port, verbose)
 
 
 http.createServer((req, res) => {
+    //res.writeHead(200, { 'Access-Control-Allow-Origin': 'http://localhost:4200' });
+    //res.writeHead(200, { 'Access-Control-Allow-Methods': 'GET,POST,OPTIONS,DELETE,PUT' });
     printTime('got a req.method:', req.method, verbose)
 
     var querystring = params(req)
@@ -125,7 +126,7 @@ http.createServer((req, res) => {
     
     if (req.method == "PUT") {
         printTime('PUT', '', verbose)
-        const lastupdate = Date.now()
+        
 
         let body = '';
         req.on('data', (chunk) => {
@@ -137,13 +138,30 @@ http.createServer((req, res) => {
 
         req.on('end', () => {
 
+            const lastupdate = Date.now()
 
+            printTime('lastupdate:',lastupdate,verbose)
             bodyd = body
+            bodyp=JSON.parse(body)
+            printTime('body:',body,verbose)
+            //printTime('bodyp:',bodyp,verbose)
+
+            bodyp.lastupdate=lastupdate
+            printTime('bodyp.lastupdate:',bodyp.lastupdate,verbose)
+            //bodyp.lastupdatestr=lastupdate
+            //printTime('bodyd.lastupdatestr:',bodyd.lastupdatestr,verbose)
+            //printTime('lud',bodyd,verbose)
             
+            //JSON.parse(bodyd).n01=lastupdate
+           // bodyd.n01='99999999999'
+            //printTime('bodyd.n01',bodyd.n01)
+
+            //printTime('lud.lud',bodyd.n01,verbose)
+            bodys=JSON.stringify(bodyp)
 
             let bodyparsed = JSON.parse(bodyd)
 
-            fs.appendFile(path, bodyd + separator, function (err) {
+            fs.appendFile(path, bodys + separator, function (err) {
                 if (err) {
 
                     printTime('append FAILED:', path, verbose)
@@ -155,7 +173,7 @@ http.createServer((req, res) => {
             // added lastupdate field to index faled as it send back multiple e=records per id
             // when using Set to get unique records
 
-            //let index = '{"id":"' + bodyparsed.id + '","lastupdate":' + lastupdate + '}'
+           // let index = '{"id":"' + bodyparsed.id + '","lastupdate":' + lastupdate + '}'
             let index = '{"id":"' + bodyparsed.id  + '"}'
             fs.appendFile(indexfile, index + separator, function (err) {
                 if (err) {
@@ -196,10 +214,8 @@ http.createServer((req, res) => {
 
 
 
-                    // printTime('index write back arrayjson:', arrayjson, verbose)
                     res.write(arrayjson)
-                    // console.log('arrayjson:', arrayjson)
-
+                    
                     for (const element of array) {
                         console.log('LOOPING:', element)
                         let jelement = JSON.parse(element)
@@ -222,16 +238,7 @@ http.createServer((req, res) => {
     if (req.method === "GET" && querystring.action === 'all') {
         printTime('get all', req.method,querystring,'method:','querystring:',verbose)
         
-        // var clients = new Set();
-        // var a = new User();
-        // var b = new User();
-
-        // clients.add(a);
-        // clients.add(b);
-
-        // printTime('clients:', clients, verbose)
-
-        
+                
         fs.readFile(indexfile, "utf8", function (err, data) {
             printTime('fs.readfile outer', indexfile,data,'readfile:','data:',verbose)
             if (!data) {
@@ -242,26 +249,21 @@ http.createServer((req, res) => {
                 let alllines = data.toString().split('<<EVENT>>\r\n')
                     .filter((val) => { return val });
                 let uniquelines= [...new Set(alllines)]
-                //printTime('alllines', alllines.length, verbose)
-                //printTime('alllines', uniquelines.length, verbose)
-                //printTime('UNIQUELINES', uniquelines, verbose)
+                
                 let returnval=[]
-                let unique='xx'
-                let numberSelected = 0;
+                
                 for (const element of uniquelines) {
 
                     
                     
                     let jelement = JSON.parse(element)
-                    //printTime('jelement.id',jelement.id,verbose)
+                    
                     returnval.push(jelement)
                     
                     
                     
                     
                 }
-                //printTime('returnval.length',returnval.length,verbose)
-                //printTime('returnval',JSON.stringify(returnval),verbose)
                 res.write(JSON.stringify(returnval))
                             
                 res.end();
@@ -275,16 +277,13 @@ http.createServer((req, res) => {
 
 
     if (req.method === "GET" && querystring.action === 'cv') {
-        //printTime('get cv', req.method,querystring.action,'method:','action:',verbose)
-        //printTime('new code GET cv', '', verbose)
-        //printTime('new code action=', querystring.action, verbose)
         if (querystring.action === 'cv') {
 
             printTime('action=cv ', querystring.action, verbose)
 
             printTime('file', file, verbose)
             //"utf8" is the encoding of the file so you get a string rather than a buffer(see stack overflow in Work/Technology/Filesystem)
-
+            //if(false){
             fs.readFile('./data/' + file, "utf8", function (err, data) {
                 if (!data) {
                     printTime('Data is empty', '', verbose)
@@ -292,26 +291,25 @@ http.createServer((req, res) => {
                     res.end();
 
                 } else {
+                    printTime('data:',JSON.stringify(data))
+                    //ppdata=JSON.parse(data)
+                    //printTime('ppdata:',ppdata)
+                    //if(false){
+                        let go0 = data.toString().split('<<EVENT>>\r\n');
+                        let go1 = go0.reduce((accumulor, item) => {
+                            if (item) {
+                                accumulor = JSON.parse(item)
 
-                    let go0 = data.toString().split('<<EVENT>>\r\n');
-                   // printTime('go0:', go0, verbose)
-
-                    let go1 = go0.reduce((accumulor, item) => {
-                        if (item) {
-                            accumulor = JSON.parse(item)
-
-                        }
-                        return accumulor
-                    }, {})
-
-                   // printTime('go1:', go1, verbose)
-
-                    res.write(JSON.stringify(go1))
-
-                    res.end();
+                            }
+                            return accumulor
+                        }, {})
+                        res.write(JSON.stringify(go1))
+                        res.end();
+                    //}                
                 }
 
             })
+        
         }
     }
     printTime('end -------', '', verbose)

@@ -21,7 +21,11 @@
   },
   "dependencies": {
     "collections": "^5.1.13",
-    "luxon": "^3.4.4"
+    "cookie-parser": "^1.4.6",
+    "cors": "^2.8.5",
+    "express": "^4.21.0",
+    "luxon": "^3.4.4",
+    "nodemon": "^3.1.7"
   },
   "homepage": "https://github.com/markdernie/eda1#readme"
 }
