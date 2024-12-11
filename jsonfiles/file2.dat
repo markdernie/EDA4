@@ -1,0 +1,48 @@
+[
+    {
+        "id": 1,
+        "name": "Mark Dernie",
+        "username": "Mark",
+        "email": "mark.dernie@gmail.com",
+        "address": {
+            "street": "Kulas Light",
+            "suite": "Apt. 556",
+            "city": "Gwenborough",
+            "zipcode": "92998-3874",
+            "geo": {
+                "lat": "-37.3159",
+                "lng": "81.1496"
+            }
+        },
+        "phone": "07976414171",
+        "website": "red-opal.com",
+        "company": {
+            "name": "redOpal",
+            "catchPhrase": "what is the worst?",
+            "bs": "harness real-time e-markets"
+        }
+    },
+    {
+        "id": 2,
+        "name": "Kate Holbrook ",
+        "username": "Kate",
+        "email": "Shanna@melissa.tv",
+        "address": {
+            "street": "Victor Plains",
+            "suite": "Suite 879",
+            "city": "Wisokyburgh",
+            "zipcode": "90566-7771",
+            "geo": {
+                "lat": "-43.9509",
+                "lng": "-34.4618"
+            }
+        },
+        "phone": "010-692-6593 x09125",
+        "website": "anastasia.net",
+        "company": {
+            "name": "Trutle Doves",
+            "catchPhrase": "Have warm hands",
+            "bs": "synergize scalable supply-chains"
+        }
+    }
+]

@@ -94,30 +94,43 @@ var port = args.port
 
 if (!port) {
    
-    port = 3002
-    printTime('port set:', '3002', verbose)
+    port = 3012
+    printTime('port set:', '3012', verbose)
 }
 var count = 0
 const separator = '<<EVENT>>\r\n'
 //printTime('port', port, verbose)
 
-// if (!file){
-//     file=indexfile
-// }
+const headers = {
+    'Access-Control-Allow-Origin': '*', /* @dev First, read about security */
+    'Access-Control-Allow-Methods': 'OPTIONS, POST, GET',
+    'Access-Control-Max-Age': 2592000, // 30 days
+    /** add other headers as per requirement */
+  };
 
 http.createServer((req, res) => {
     //    printTime('got a req.method:', req.method, verbose)
+    const headers = {
+        'Access-Control-Allow-Origin': '*', /* @dev First, read about security */
+        'Access-Control-Allow-Methods': 'OPTIONS, POST, GET',
+        'Access-Control-Max-Age': 2592000, // 30 days
+        /** add other headers as per requirement */
+      };
+
+      if (req.method === 'OPTIONS') {
+        res.writeHead(204, headers);
+        res.end();
+        return;
+      }
 
     var querystring = params(req)
     
 
     file = querystring.file
+    printTime('file:',file,verbose)
     if (!file) {
         printTime('EXITTING because of no file sent', '', verbose)
-        let message='file wasnt sent'
-        res.write(message)
-        res.end()
-       // file='index.dat'
+
         return
     }
 
@@ -233,10 +246,12 @@ http.createServer((req, res) => {
 
     }
     if (req.method === "GET" && querystring.action === 'all') {
-        //printTime('get all', req.method,querystring,'method:','querystring:',verbose)
-        printTime('get cv',verbose)
+        printTime('get all', req.method,querystring,'method:','querystring:',verbose)
+        printTime('indexfile:',indexfile,verbose)
+        let indexfile2='./jsonfiles/file1.dat'
+        
                 
-        fs.readFile(indexfile, "utf8", function (err, data) {
+        fs.readFile('./jsonfiles/file1.dat', "utf8", function (err, data) {
            // printTime('fs.readfile outer', indexfile,data,'readfile:','data:',verbose)
             if (!data) {
                 console.log('data empty')
@@ -288,7 +303,7 @@ http.createServer((req, res) => {
             //printTime('file', file, verbose)
             //"utf8" is the encoding of the file so you get a string rather than a buffer(see stack overflow in Work/Technology/Filesystem)
             //if(false){
-            fs.readFile('./data/' + file, "utf8", function (err, data) {
+            fs.readFile('./jsonfiles/' + file, "utf8", function (err, data) {
                 if (!data) {
                     printTime('Data is empty', '', verbose)
                     res.write(JSON.stringify({ 'ERROR': 'the file:' + file + ' does not exists' }))

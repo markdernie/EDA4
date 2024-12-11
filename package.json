@@ -5,7 +5,8 @@
   "main": "eda1.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node eda1.js"
+    "start": "node eda1.js",
+    "ws" : "ws --cors.origin http://KatesLaptop:4200 --https"
   },
   "repository": {
     "type": "git",
